@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crypto Currency Exchange</title>
+  <!-- Latest compiled and minified CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+  <!-- Optional theme -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css"
+    integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+  <!-- Latest compiled and minified JavaScript -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"
+    integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+    crossorigin="anonymous"></script>
+  <script>
+    const APP_URL = 'http://localhost:3000/';
+  </script>
+  <style>
+    .buttonchange {
+      padding: 15px 15px 10px 15px;
+      border-radius: 50%;
+      border: 1px solid lightgray;
+      background-color: white;
+      margin-top: 10px;
+    }
+
+    .buttonchange span {
+      color: #0E6FFF;
+      font-size: 20px;
+    }
+
+    .Convertbutton {
+      background-color: #0E6FFF;
+      color: white;
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    .Convertbutton:hover {
+      color: white;
+      background-color: blue;
+    }
+
+    .main-container {
+      padding: 50px;
+      border: 1px solid whitesmoke;
+      margin-top: 50px;
+    }
+  </style>
+</head>
+
+<body>
+  <section class="container main-container">     
+    <form class="form-group">
+      <div class="col-sm-12 container">
+        <div class="col-sm-12 text-center">
+          <h3>Crypto Currency Exchange</h3>
+          <br />
+        </div>
+        <div class="col-sm-3">
+          <label>Amount</label>
+          <input class="form-control" type="number" name="" value="1" id="amount">
+        </div>
+        <div class="col-sm-4">
+          <label>From</label>
+          <select class="form-control" id="currency">
+            {{#each currencies}}
+            <option value="{{this.ticker}}">{{this.name}}</option>
+            {{/each}}
+          </select>
+        </div>
+        <div class="col-sm-1 text-center">
+          <button class="btn buttonchange" onclick="estimate(); return false;" title="Click here to get estimate value"><span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="col-sm-4">
+          <label>Amount</label>
+          <input class="form-control" type="number" name="" value="" placeholder="Result amount in EUR" readonly id="exchange-value">
+        </div>
+        <div class="col-sm-12 mt-5">
+          <br />
+          <h4 id="message"></h4>
+        </div>
+      </div>
+    </form>
+  </section>
+</body>
+
+<script>
+  function estimate() {
+    let params = {
+      "from_amount": $("#amount").val(),
+      "from_currency": $("#currency").val(),
+      "to_currency": 'EUR',
+    };
+
+    let url = APP_URL + `estimate`;
+    $("#message").html('Please wait..');
+    $("#exchange-value").val('')
+    $.ajax({
+      url: url,
+      method: 'get',
+      data: params,
+      success: function (res) {
+        $("#message").html('');
+        if (res.success) {
+          let value = res.result.value;        
+          $("#exchange-value").val(value);
+        }else{
+          console.log(res.result)
+          $("#message").html(res.result);
+        }
+        
+      }
+    });
+  }
+</script>
+
+</html>
